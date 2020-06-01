@@ -15,12 +15,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const options = {
-    delay: 5000, // 10 seg in ms
-    attempts: 1
+    delay: 1000, // 10 seg in ms
+    attempts: 5,
+    backoff: { type: 'exponential', delay: 5000 } // fixed ou exponential
 };
 
 // configura endpoints
 app.post('/bull-demo/novo-job', function (req, res) {
+    console.log(new Date().toLocaleTimeString());
 
     // fila ok?
     if(!minhaFila.isReady){

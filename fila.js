@@ -1,13 +1,14 @@
 const Queue = require('bull');
 
-//let sidaAuthToken;
-
 // Inicializa fila
 const minhaFila = new Queue('minhaFila', {
     redis: {
         host: "127.0.0.1",
         port: "6379",
         // password: 'root'
+    },
+    settings: { 
+        removeOnComplete: true 
     }
 });
 
@@ -30,6 +31,8 @@ minhaFila.on('active', function(job, jobPromise){
 minhaFila.on('completed', function(job, result) {
     console.log(`${result}, job finalizado com sucesso`);
     console.log(`${JSON.stringify(job)}`);
+    // remove job da fila
+    //job.remove();
 });
 
 //   outros eventos
@@ -50,6 +53,8 @@ minhaFila.on('error', function(error){
 minhaFila.on('failed', function(job, error){
     console.log(`Job falhou`);
     console.log(error);
+    // retry
+    //job.retry();
 });
 
 module.exports = minhaFila
